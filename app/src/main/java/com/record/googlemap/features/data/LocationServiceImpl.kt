@@ -1,27 +1,25 @@
-package com.record.googlemap.features
+package com.record.googlemap.features.data
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Looper
-import androidx.annotation.RequiresApi
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.LatLng
+import com.record.googlemap.features.domain.LocationService
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
-class LocationService @Inject constructor(
+class LocationServiceImpl @Inject constructor(
     private val context: Context,
     private val locationClient: FusedLocationProviderClient
-): ILocationService {
+) : LocationService {
     @SuppressLint("MissingPermission")
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun requestLocationUpdates(): Flow<LatLng?> = callbackFlow {
 
         if (!context.hasLocationPermission()) {
@@ -53,7 +51,21 @@ class LocationService @Inject constructor(
         }
     }
 
-    override fun requestCurrentLocation(): Flow<LatLng?> {
-        TODO("Not yet implemented")
+    override fun requestCurrentLocation(): Flow<LatLng?> = callbackFlow {
+//        if (!context.hasLocationPermission()) {
+//            trySend(null)
+//            return@callbackFlow
+//        }
+//
+//        locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+//            location?.let {
+//                trySend(LatLng(it.latitude, it.longitude))
+//            } ?: trySend(null)
+//        }.addOnFailureListener { e ->
+//            // Handle failure, e.g., location services disabled or permissions denied.
+//            trySend(null)
+//        }
+//
+//        awaitClose { /* Cleanup if needed */ }
     }
 }

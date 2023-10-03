@@ -1,4 +1,4 @@
-package com.record.googlemap.ui.theme
+package com.record.googlemap.features.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

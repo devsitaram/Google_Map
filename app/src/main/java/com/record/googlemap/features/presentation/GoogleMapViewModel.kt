@@ -1,21 +1,18 @@
-package com.record.googlemap.features
+package com.record.googlemap.features.presentation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
+import com.record.googlemap.features.domain.GetLocationUseCase
+import com.record.googlemap.features.presentation.PermissionEvent
+import com.record.googlemap.features.presentation.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@RequiresApi(Build.VERSION_CODES.S)
 @HiltViewModel
-class MainActivityVM @Inject constructor(
-    private val getLocationUseCase: GetLocationUseCase
-) : ViewModel() {
+class GoogleMapViewModel @Inject constructor(private val getLocationUseCase: GetLocationUseCase) : ViewModel() {
 
     private val _viewState: MutableStateFlow<ViewState> = MutableStateFlow(ViewState.Loading)
     val viewState = _viewState.asStateFlow()
@@ -37,18 +34,4 @@ class MainActivityVM @Inject constructor(
             }
         }
     }
-}
-
-// To simplify, I've added ViewState and PermissionEvent in the same file.
-// Ideally, it's better to have them in separate files
-
-sealed interface ViewState {
-    object Loading : ViewState
-    data class Success(val location: LatLng?) : ViewState
-    object RevokedPermissions : ViewState
-}
-
-sealed interface PermissionEvent {
-    object Granted : PermissionEvent
-    object Revoked : PermissionEvent
 }

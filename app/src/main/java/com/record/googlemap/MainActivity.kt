@@ -2,13 +2,11 @@ package com.record.googlemap
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,25 +45,23 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.record.googlemap.features.MainActivityVM
-import com.record.googlemap.features.PermissionEvent
-import com.record.googlemap.features.ViewState
-import com.record.googlemap.features.hasLocationPermission
-import com.record.googlemap.ui.theme.GoogleMapTheme
+import com.record.googlemap.features.presentation.GoogleMapViewModel
+import com.record.googlemap.features.presentation.PermissionEvent
+import com.record.googlemap.features.presentation.ViewState
+import com.record.googlemap.features.data.hasLocationPermission
+import com.record.googlemap.features.theme.GoogleMapTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @OptIn(ExperimentalPermissionsApi::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     @OptIn(ExperimentalPermissionsApi::class)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val locationViewModel: MainActivityVM by viewModels()
+        val locationViewModel: GoogleMapViewModel by viewModels()
 
         setContent {
 
@@ -144,8 +140,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is ViewState.Success -> {
-                                val currentLoc =
-                                    LatLng(
+                                val currentLoc = LatLng(
                                         location?.latitude ?: 0.0,
                                         location?.longitude ?: 0.0
                                     )
@@ -195,7 +190,6 @@ fun MainScreen(currentPosition: LatLng, cameraState: CameraPositionState) {
 
 @Composable
 fun RationaleAlert(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties()
@@ -226,7 +220,7 @@ fun RationaleAlert(onDismiss: () -> Unit, onConfirm: () -> Unit) {
     }
 }
 
-private suspend fun CameraPositionState.centerOnLocation(
+suspend fun CameraPositionState.centerOnLocation(
     location: LatLng
 ) = animate(
     update = CameraUpdateFactory.newLatLngZoom(

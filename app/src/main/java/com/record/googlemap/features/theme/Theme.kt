@@ -1,4 +1,4 @@
-package com.record.googlemap.ui.theme
+package com.record.googlemap.features.theme
 
 import android.app.Activity
 import android.os.Build

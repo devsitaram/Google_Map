@@ -30,13 +30,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.record.googlemap.MainScreen
-import com.record.googlemap.RationaleAlert
-import com.record.googlemap.centerOnLocation
 import com.record.googlemap.features.data.hasLocationPermission
 import com.record.googlemap.features.presentation.GoogleMapViewModel
 import com.record.googlemap.features.presentation.PermissionEvent
 import com.record.googlemap.features.presentation.ViewState
+import com.record.googlemap.features.presentation.ui.compose.RationaleAlert
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

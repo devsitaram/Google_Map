@@ -1,8 +1,12 @@
 package com.record.googlemap.features.data
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -22,10 +26,18 @@ class LocationServiceImpl @Inject constructor(
     @SuppressLint("MissingPermission")
     override fun requestLocationUpdates(): Flow<LatLng?> = callbackFlow {
 
-        if (!context.hasLocationPermission()) {
+        // activity
+//        if (!context.hasLocationPermission()) {
+//            trySend(null)
+//            return@callbackFlow
+//        }
+
+        // compose
+        if(!hasLocationPermission(context)){
             trySend(null)
             return@callbackFlow
         }
+
 
         val request = LocationRequest.Builder(10000L)
             .setIntervalMillis(10000L)
@@ -52,20 +64,25 @@ class LocationServiceImpl @Inject constructor(
     }
 
     override fun requestCurrentLocation(): Flow<LatLng?> = callbackFlow {
-//        if (!context.hasLocationPermission()) {
-//            trySend(null)
-//            return@callbackFlow
-//        }
-//
-//        locationClient.lastLocation.addOnSuccessListener { location: Location? ->
-//            location?.let {
-//                trySend(LatLng(it.latitude, it.longitude))
-//            } ?: trySend(null)
-//        }.addOnFailureListener { e ->
-//            // Handle failure, e.g., location services disabled or permissions denied.
-//            trySend(null)
-//        }
-//
-//        awaitClose { /* Cleanup if needed */ }
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return@callbackFlow
+        }
+        locationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                trySend(LatLng(it.latitude, it.longitude))
+            } ?: trySend(null)
+        }.addOnFailureListener { e ->
+            // Handle failure, e.g., location services disabled or permissions denied.
+            trySend(null)
+        }
+
+        awaitClose { /* Cleanup if needed */ }
     }
 }
